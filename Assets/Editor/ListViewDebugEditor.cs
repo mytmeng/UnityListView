@@ -10,16 +10,16 @@ public class ListViewDebugEditor:EditorWindow
     {
         GetWindow<ListViewDebugEditor>();
     }
-    ListViewTest listView;
+    ListView2 listView;
     int scrollTarget;
     private void OnGUI()
     {
-        listView = EditorGUILayout.ObjectField(listView, typeof(ListViewTest), true) as ListViewTest;
+        listView = EditorGUILayout.ObjectField(listView, typeof(ListView2), true) as ListView2;
         if(listView == null)
         {
             return;
         }
-        scrollTarget = EditorGUILayout.IntSlider(scrollTarget, 0, listView.DataSource.Count - 1);
+        scrollTarget = EditorGUILayout.IntSlider(scrollTarget, 0, listView.GetDataCount() - 1);
         if(GUILayout.Button("滑动至"))
         {
             listView.ScrollTo(scrollTarget);

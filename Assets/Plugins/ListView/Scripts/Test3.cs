@@ -2,56 +2,16 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class ListViewTest : ListView<ListViewTestItem, ListViewTestData>
+public class Test3 : MonoBehaviour
 {
     [SerializeField]
+    ListView2 _testListView;
+    [SerializeField]
     Button Btn;
-    void OnBtn()
-    {
-        List<ListViewTestData> datas = new List<ListViewTestData>() {
-            new ListViewTestData("abc", 1),
-            new ListViewTestData("123", 2),
-            new ListViewTestData("123", 3),
-            new ListViewTestData("ABC", 4),
-            new ListViewTestData("ABC", 5),
-            new ListViewTestData("ABC", 6),
-            new ListViewTestData("ABC", 7),
-            new ListViewTestData("ABC", 8),
-            new ListViewTestData("ABC", 9),
-            new ListViewTestData("ABC", 10),
-            new ListViewTestData("ABC", 11),
-            new ListViewTestData("ABC", 12),
-            new ListViewTestData("ABC", 13),
-            new ListViewTestData("ABC", 14),
-            new ListViewTestData("ABC", 15),
-            new ListViewTestData("ABC", 16),
-            new ListViewTestData("ABC", 17),
-            new ListViewTestData("ABC", 18),
-            new ListViewTestData("ABC", 19),
-            new ListViewTestData("ABC", 20),
-            new ListViewTestData("ABC", 21),
-            new ListViewTestData("ABC", 22),
-            new ListViewTestData("ABC", 23),
-            new ListViewTestData("ABC", 24),
-            new ListViewTestData("ABC", 25),
-            new ListViewTestData("ABC", 26),
-            new ListViewTestData("ABC", 27),
-            new ListViewTestData("ABC", 28),
-            new ListViewTestData("ABC", 29)
-        };
-        DataSource = datas;
-    }
-
-    public override void SetData(ListViewTestItem item, ListViewTestData data)
-    {
-        item.SetData(data);
-    }
-
-    protected void Start() {
-        Btn.onClick.AddListener(OnBtn);
-        List<ListViewTestData> datas = new List<ListViewTestData>() {
+    List<ListViewTestData> datas = new List<ListViewTestData>() {
             new ListViewTestData("abc", 0),
             new ListViewTestData("abc", 1),
             new ListViewTestData("123", 2),
@@ -153,14 +113,71 @@ public class ListViewTest : ListView<ListViewTestItem, ListViewTestData>
             new ListViewTestData("ABC", 98),
             new ListViewTestData("ABC", 99),
         };
-        DataSource = datas;
-        OnClickItem += OnClickItemCB;
-        ScrollTo(11);
+    void OnBtn()
+    {
+        datas = new List<ListViewTestData>() {
+            new ListViewTestData("abc", 1),
+            new ListViewTestData("123", 2),
+            new ListViewTestData("123", 3),
+            new ListViewTestData("ABC", 4),
+            new ListViewTestData("ABC", 5),
+            new ListViewTestData("ABC", 6),
+            new ListViewTestData("ABC", 7),
+            new ListViewTestData("ABC", 8),
+            new ListViewTestData("ABC", 9),
+            new ListViewTestData("ABC", 10),
+            new ListViewTestData("ABC", 11),
+            new ListViewTestData("ABC", 12),
+            new ListViewTestData("ABC", 13),
+            new ListViewTestData("ABC", 14),
+            new ListViewTestData("ABC", 15),
+            new ListViewTestData("ABC", 16),
+            new ListViewTestData("ABC", 17),
+            new ListViewTestData("ABC", 18),
+            new ListViewTestData("ABC", 19),
+            new ListViewTestData("ABC", 20),
+            new ListViewTestData("ABC", 21),
+            new ListViewTestData("ABC", 22),
+            new ListViewTestData("ABC", 23),
+            new ListViewTestData("ABC", 24),
+            new ListViewTestData("ABC", 25),
+            new ListViewTestData("ABC", 26),
+            new ListViewTestData("ABC", 27),
+            new ListViewTestData("ABC", 28),
+            new ListViewTestData("ABC", 29)
+        };
+        _testListView.Refresh();
+    }
+    private void Awake()
+    {
+        Btn.onClick.AddListener(OnBtn);
+        _testListView.SetHighLightCallback(SetHighLight);
+        _testListView.Refresh(GetListViewCount, SetListViewItem);
     }
 
-    private void OnClickItemCB(int i)
+    private void SetHighLight(RectTransform item, bool selected)
     {
-        Select(i);
-        Debug.LogError("选中了:"+ i);
+        TestItemPanel panel = item.GetComponent<TestItemPanel>();
+        panel._selectedFlag.gameObject.SetActive(selected);
+    }
+
+    private void SetListViewItem(RectTransform item, int index)
+    {
+        TestItemPanel panel = item.GetComponent<TestItemPanel>();
+        ListViewTestData data = datas[index];
+        panel._nameTxt.text = data.name;
+        panel._idTxt.text = data.id.ToString();
+        panel._btn.onClick.RemoveAllListeners();
+        panel._btn.onClick.AddListener(() => { _testListView.Select(index); });
+    }
+
+
+    private int GetListViewCount()
+    {
+        return datas.Count;
+    }
+
+    private void OnChange(Transform trans, int index)
+    {
     }
 }
